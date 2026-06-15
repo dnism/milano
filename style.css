@@ -121,31 +121,34 @@ body {
     gap: 15px;
 }
 
-.swiss-cross {
-    width: 32px;
-    height: 32px;
-    background-color: var(--swiss-red);
+.milano-flag {
+    width: 54px;
+    height: 38px;
+    background-color: #ffffff;
+    border: 2px solid var(--text-primary);
     position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    flex-shrink: 0;
 }
 
-.swiss-cross::before, .swiss-cross::after {
+.milano-flag::before, .milano-flag::after {
     content: '';
     position: absolute;
-    background-color: #ffffff;
+    background-color: var(--swiss-red);
 }
 /* Horizontal line of cross */
-.swiss-cross::before {
-    width: 20px;
+.milano-flag::before {
+    width: 100%;
     height: 6px;
-    left: 6px;
-    top: 13px;
+    left: 0;
+    top: calc(50% - 3px);
 }
 /* Vertical line of cross */
-.swiss-cross::after {
+.milano-flag::after {
     width: 6px;
-    height: 20px;
-    left: 13px;
-    top: 6px;
+    height: 100%;
+    left: calc(50% - 3px);
+    top: 0;
 }
 
 .app-title-group {
@@ -172,7 +175,7 @@ body {
 /* Header Meta: Time, Traffic, Actions */
 .header-meta-section {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 30px;
 }
 
@@ -217,8 +220,13 @@ body {
 
 .system-controls {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 15px;
+}
+
+.system-controls .swiss-btn-outline,
+.system-controls .swiss-btn-primary {
+    align-self: flex-end;
 }
 
 @media (max-width: 600px) {
@@ -1023,21 +1031,17 @@ body {
     .header-logo-section {
         gap: 10px;
     }
-    .swiss-cross {
-        width: 28px;
-        height: 28px;
+    .milano-flag {
+        width: 42px;
+        height: 30px;
     }
-    .swiss-cross::before {
-        width: 18px;
-        height: 5px;
-        left: 5px;
-        top: 11px;
+    .milano-flag::before {
+        height: 4px;
+        top: calc(50% - 2px);
     }
-    .swiss-cross::after {
-        width: 5px;
-        height: 18px;
-        left: 11px;
-        top: 5px;
+    .milano-flag::after {
+        width: 4px;
+        left: calc(50% - 2px);
     }
     .header-meta-section {
         flex-direction: column;
@@ -1054,6 +1058,10 @@ body {
         flex-direction: column;
         align-items: stretch;
         width: 100%;
+    }
+    .system-controls .swiss-btn-outline,
+    .system-controls .swiss-btn-primary {
+        align-self: stretch;
     }
     .control-group {
         width: 100%;

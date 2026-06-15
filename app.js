@@ -9,28 +9,28 @@ const MILANO_STOP_DATABASE = [
         id: 11203,
         name: "Piazza Cinque Giornate",
         lines: [
-            { num: "9", type: "tram", dir: "Porta Genova FS", freq: 6, veh: "Tram Sirio (Basso Pianale)" },
-            { num: "9", type: "tram", dir: "Centrale FS", freq: 6, veh: "Tram Sirio (Basso Pianale)" },
-            { num: "12", type: "tram", dir: "Viale Molise", freq: 8, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "12", type: "tram", dir: "Roserio (Ospedale Sacco)", freq: 8, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "19", type: "tram", dir: "Stazione Lambrate", freq: 9, veh: "Tram Ventotto (Storico)" },
-            { num: "27", type: "tram", dir: "Piazza Fontana", freq: 7, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "27", type: "tram", dir: "Viale Ungheria", freq: 7, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "60", type: "bus", dir: "Zara M3/M5", freq: 8, veh: "Bus Elettrico 12m" }
+            { num: "9", type: "tram", dir: "Porta Genova FS", freq: 3, veh: "Tram Sirio (Basso Pianale)" },
+            { num: "9", type: "tram", dir: "Centrale FS", freq: 3, veh: "Tram Sirio (Basso Pianale)" },
+            { num: "12", type: "tram", dir: "Viale Molise", freq: 5, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "12", type: "tram", dir: "Roserio (Ospedale Sacco)", freq: 5, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "19", type: "tram", dir: "Stazione Lambrate", freq: 4, veh: "Tram Ventotto (Storico)" },
+            { num: "27", type: "tram", dir: "Piazza Fontana", freq: 4, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "27", type: "tram", dir: "Viale Ungheria", freq: 4, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "60", type: "bus", dir: "Zara M3/M5", freq: 5, veh: "Bus Elettrico 12m" }
         ]
     },
     {
         id: 11205,
         name: "C.so P.ta Vittoria (Camera del Lavoro)",
         lines: [
-            { num: "12", type: "tram", dir: "Viale Molise", freq: 8, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "12", type: "tram", dir: "Roserio (Ospedale Sacco)", freq: 8, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "19", type: "tram", dir: "Stazione Lambrate", freq: 9, veh: "Tram Ventotto (Storico)" },
-            { num: "19", type: "tram", dir: "Piazza Castelli", freq: 9, veh: "Tram Ventotto (Storico)" },
-            { num: "27", type: "tram", dir: "Piazza Fontana", freq: 7, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "27", type: "tram", dir: "Viale Ungheria", freq: 7, veh: "Tram Eurotram (Pianale Ribassato)" },
-            { num: "60", type: "bus", dir: "Zara M3/M5", freq: 8, veh: "Bus Elettrico 12m" },
-            { num: "60", type: "bus", dir: "Largo Augusto", freq: 8, veh: "Bus Elettrico 12m" }
+            { num: "12", type: "tram", dir: "Viale Molise", freq: 5, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "12", type: "tram", dir: "Roserio (Ospedale Sacco)", freq: 5, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "19", type: "tram", dir: "Stazione Lambrate", freq: 4, veh: "Tram Ventotto (Storico)" },
+            { num: "19", type: "tram", dir: "Piazza Castelli", freq: 4, veh: "Tram Ventotto (Storico)" },
+            { num: "27", type: "tram", dir: "Piazza Fontana", freq: 4, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "27", type: "tram", dir: "Viale Ungheria", freq: 4, veh: "Tram Eurotram (Pianale Ribassato)" },
+            { num: "60", type: "bus", dir: "Zara M3/M5", freq: 5, veh: "Bus Elettrico 12m" },
+            { num: "60", type: "bus", dir: "Largo Augusto", freq: 5, veh: "Bus Elettrico 12m" }
         ]
     },
     {
@@ -263,7 +263,7 @@ function getDepartures(stopId, line, trafficMode) {
 
 // 4. STORAGE LOGIC
 function loadState() {
-    const saved = localStorage.getItem("milano_transit_swiss_state_v3");
+    const saved = localStorage.getItem("milano_transit_swiss_state_v4");
     if (saved) {
         try {
             state = JSON.parse(saved);
@@ -282,7 +282,7 @@ function loadState() {
 }
 
 function saveState() {
-    localStorage.setItem("milano_transit_swiss_state_v3", JSON.stringify({
+    localStorage.setItem("milano_transit_swiss_state_v4", JSON.stringify({
         pois: state.pois,
         trafficMode: state.trafficMode,
         theme: state.theme
