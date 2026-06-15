@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milano Transit — Tabellone Partenze</title>
+    <!-- Google Fonts for Modernist Swiss Typography (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+    <!-- Main Swiss Grid Layout Container -->
+    <div class="app-container">
+        
+        <!-- Header: Typographic and functional -->
+        <header class="app-header">
+            <div class="header-logo-section">
+                <div class="swiss-cross"></div>
+                <div class="app-title-group">
+                    <h1 class="app-title">MILANO TRANSIT</h1>
+                    <p class="app-subtitle">TABELLONE PARTENZE / LIVE SCHEDULE</p>
+                </div>
+            </div>
+            
+            <div class="header-meta-section">
+                <!-- Clock & Date -->
+                <div class="clock-display">
+                    <div id="live-date" class="meta-label">LUNEDÌ, 15 GIUGNO 2026</div>
+                    <div id="live-time" class="time-string">17:14:43</div>
+                </div>
+                
+                <!-- System Controllers -->
+                <div class="system-controls">
+                    <div class="control-group">
+                        <span class="meta-label">TRAFFICO AUTOMATICO</span>
+                        <div id="traffic-auto-status" class="swiss-select-mock">RILEVAMENTO IN CORSO...</div>
+                    </div>
+                    
+                    <button id="theme-toggle" class="swiss-btn-outline" title="Cambia Tema">
+                        TEMA: SCURO
+                    </button>
+                    
+                    <button id="open-config-btn" class="swiss-btn-primary">
+                        CONFIGURA VIE & PUNTI
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Transit Dashboard -->
+        <main class="dashboard-grid" id="dashboard-grid">
+            <!-- Points of Interest will be dynamically rendered here -->
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>CARICAMENTO TABELLONE IN CORSO...</p>
+            </div>
+        </main>
+
+        <!-- Sidebar / Drawer Configuration Panel -->
+        <aside class="config-sidebar" id="config-sidebar">
+            <div class="sidebar-header">
+                <h2>CONFIGURAZIONE VIE & PUNTI</h2>
+                <button id="close-config-btn" class="close-btn" aria-label="Chiudi">&times;</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Points of Interest List -->
+                <section class="config-section">
+                    <div class="section-title-bar">
+                        <h3>1. PUNTI DI INTERESSE</h3>
+                        <button id="add-poi-btn" class="swiss-btn-sm">+ NUOVO PUNTO</button>
+                    </div>
+                    <p class="section-desc">Crea gruppi di fermate (es. "CASA", "UFFICIO", "UNIVERSITÀ").</p>
+                    <div id="poi-list" class="poi-config-list">
+                        <!-- Rendered by JS -->
+                    </div>
+                </section>
+
+                <hr class="swiss-divider">
+
+                <!-- Stop manager inside selected Point of Interest -->
+                <section class="config-section">
+                    <div class="section-title-bar">
+                        <h3>2. GESTIONE FERMATE</h3>
+                        <button id="add-stop-btn" class="swiss-btn-sm" disabled>+ AGGIUNGI FERMATA</button>
+                    </div>
+                    <p class="section-desc" id="current-poi-label">Seleziona un punto di interesse sopra per gestire le sue fermate.</p>
+                    <div id="stops-config-list" class="stops-config-list">
+                        <!-- Rendered by JS -->
+                        <div class="empty-state-message">Nessun punto di interesse selezionato.</div>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <!-- Modal for adding/editing POI -->
+        <div class="modal-overlay" id="poi-modal">
+            <div class="swiss-modal">
+                <div class="modal-header">
+                    <h3 id="poi-modal-title">NUOVO PUNTO DI INTERESSE</h3>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="poi-form">
+                        <div class="form-group">
+                            <label for="poi-name" class="form-label">Nome Punto (es. Casa, Lavoro, Navigli)</label>
+                            <input type="text" id="poi-name" class="swiss-input" placeholder="Es. CASA" required maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label for="poi-icon" class="form-label">Icona / Sigla (Max 2 caratteri)</label>
+                            <input type="text" id="poi-icon" class="swiss-input" placeholder="Es. CA" required maxlength="2" style="text-transform: uppercase;">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="swiss-btn-outline cancel-modal-btn">ANNULLA</button>
+                            <button type="submit" class="swiss-btn-primary">SALVA</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for adding/editing Stops -->
+        <div class="modal-overlay" id="stop-modal">
+            <div class="swiss-modal modal-large">
+                <div class="modal-header">
+                    <h3 id="stop-modal-title">AGGIUNGI FERMATA</h3>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-container">
+                        <button class="tab-btn active" id="tab-db-btn">CERCA NEL DATABASE REALISTICO</button>
+                        <button class="tab-btn" id="tab-custom-btn">CREA FERMATA PERSONALIZZATA</button>
+                    </div>
+
+                    <!-- TAB 1: DB Stop Finder -->
+                    <div class="tab-pane active" id="pane-db">
+                        <div class="form-group">
+                            <label for="db-search" class="form-label">Cerca Fermata (es. Crocetta, Duomo, Zara, Cinque Giornate)</label>
+                            <input type="text" id="db-search" class="swiss-input" placeholder="Scrivi per filtrare le fermate...">
+                        </div>
+                        <div class="search-results-container" id="search-results">
+                            <!-- Preloaded search results -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Custom Stop Creator -->
+                    <div class="tab-pane" id="pane-custom">
+                        <form id="custom-stop-form">
+                            <div class="form-row">
+                                <div class="form-group col-6">
+                                    <label for="stop-name" class="form-label">Nome Fermata / Via</label>
+                                    <input type="text" id="stop-name" class="swiss-input" placeholder="Es. Via Ripamonti - Via Sabotino" required>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label for="stop-code" class="form-label">Codice Fermata (opzionale)</label>
+                                    <input type="text" id="stop-code" class="swiss-input" placeholder="Es. 12456" maxlength="6">
+                                </div>
+                            </div>
+                            
+                            <hr class="swiss-divider">
+                            
+                            <h4>LINEE DI PASSAGGIO</h4>
+                            <p class="section-desc">Aggiungi i bus o tram che passano da questa fermata.</p>
+                            
+                            <div class="custom-lines-creator">
+                                <div class="form-row align-end">
+                                    <div class="form-group col-3">
+                                        <label for="line-num" class="form-label">Linea</label>
+                                        <input type="text" id="line-num" class="swiss-input" placeholder="Es. 9, 90, M3">
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label for="line-type" class="form-label">Tipo</label>
+                                        <select id="line-type" class="swiss-select">
+                                            <option value="tram">TRAM</option>
+                                            <option value="bus">BUS</option>
+                                            <option value="metro">METRO</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="line-dir" class="form-label">Direzione</label>
+                                        <input type="text" id="line-dir" class="swiss-input" placeholder="Es. Staz. Centrale / San Donato">
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <button type="button" id="add-line-to-list-btn" class="swiss-btn-primary block-btn">AGGIUNGI</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-row mt-10">
+                                    <div class="form-group col-6">
+                                        <label for="line-freq" class="form-label">Frequenza teorica (minuti)</label>
+                                        <input type="number" id="line-freq" class="swiss-input" min="2" max="60" value="7">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="line-veh" class="form-label">Tipologia Vettura (opzionale)</label>
+                                        <select id="line-veh" class="swiss-select">
+                                            <option value="Tram Sirio (Basso Pianale)">Tram Sirio (Basso Pianale)</option>
+                                            <option value="Tram Ventotto (Storico)">Tram Ventotto (Storico)</option>
+                                            <option value="Bus Snodato 18m (Basso Pianale)">Bus Snodato 18m (Basso Pianale)</option>
+                                            <option value="Bus Elettrico 12m">Bus Elettrico 12m</option>
+                                            <option value="Treno Metropolitana">Treno Metropolitana</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="added-lines-container">
+                                    <h5>LINEE AGGIUNTE:</h5>
+                                    <div id="added-lines-list" class="added-lines-flex">
+                                        <!-- Temporary list of added lines -->
+                                        <div class="no-lines-yet">Nessuna linea aggiunta per ora.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-actions mt-20">
+                                <button type="button" class="swiss-btn-outline cancel-modal-btn">ANNULLA</button>
+                                <button type="button" id="submit-custom-stop-btn" class="swiss-btn-primary">SALVA FERMATA CUSTOM</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Banner -->
+        <div class="notification-toast" id="notification-toast">
+            <span class="toast-message">Modifiche salvate con successo.</span>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>DESIGN SYSTEM: SVIZZERO MODERNISTA (FRUTIGER/HELVETICA) / GRID ALIGNED / 60HZ ENGINE</p>
+            <p>APPLICAZIONE INDIPENDENTE E NON UFFICIALE. I dati dei transiti sono simulati a scopo informativo. &copy; 2026.</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
